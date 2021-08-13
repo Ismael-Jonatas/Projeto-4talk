@@ -144,7 +144,7 @@ public class Fachada {
 						if(mens.getId() == i) {
 							verificar = true;
 							usuariologado.remover(mens);
-							Mensagem mensagem = daomensagem.read(i);
+							Mensagem mensagem = daomensagem.read(i);//redudante
 							daomensagem.delete(mensagem);
 							daousuario.update(usuariologado);
 							DAO.commit();
@@ -167,6 +167,8 @@ public class Fachada {
 			
 		}else {
 			DAO.begin();
+			String texto = Fachada.getLogado().getNome() + " Saiu do Grupo";
+			Fachada.criarMensagem(texto);
 			usuariologado.setStatus(false);
 			daousuario.update(usuariologado);
 			DAO.commit();
