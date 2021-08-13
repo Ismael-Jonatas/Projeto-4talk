@@ -44,6 +44,7 @@ public class Fachada {
 		// nao precisa estar logado
 		return daolog.readAll();	
 	}
+	//APRESENTAR
 	public static List<Mensagem> buscarMensagens(String termo) throws  Exception{
 
 		return daomensagem.readByTermo(termo);
@@ -128,27 +129,33 @@ public class Fachada {
 
 
 	public static void apagarMensagens(int... ids) throws  Exception{
-		DAO.begin();
+		
 		if (usuariologado == null) {
 			throw new Exception("É necessário estar logado!");
 			
-		}else {		
+		}else {
+			DAO.begin();
+			Boolean verificar = false;
 			List<Mensagem> mensUsuario = usuariologado.getMensagens();
 			for (int i:ids) {
+				verificar = false;
 				for(Mensagem mens: mensUsuario) {
 					
-						if(mens.getId() == i) {	
+						if(mens.getId() == i) {
+							verificar = true;
 							usuariologado.remover(mens);
 							Mensagem mensagem = daomensagem.read(i);
 							daomensagem.delete(mensagem);
 							daousuario.update(usuariologado);
 							DAO.commit();
 							System.out.println("Mensagem Excluida");
-						}else {
-							System.out.println("ID inexistente!");
 						}
+						
 				}
 
+			}
+			if(!verificar) {
+				System.out.println("Mensagem não encontrada!");
 			}
 		}
 	}
